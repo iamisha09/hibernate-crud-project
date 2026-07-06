@@ -1,20 +1,14 @@
 package com.hbn.entity;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.NamedQuery;
-
-@NamedQuery(
-name = "findByID",
-query = "FROM Employee E WHERE E.id > :id"
-)
-@NamedQuery(
-		name = "findByGender",
-        query = "SELECT e FROM Employee e WHERE e.gender = :gender"	
-		)
-
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Transient;
 
 
 @Entity
@@ -26,14 +20,32 @@ public class Employee {
 	private String name , gender;
 	private int salary;
 	
-	public Employee( String name, String gender, int salary) {
+	//@Transient
+	private String country;
+	
+	@OneToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "add_id")
+    private Address address;
+	
+	public Employee() {
+		super();
+	}
+	
+
+	public Employee( String name, String gender, int salary, Address address) {
 		super();
 		this.name = name;
 		this.gender = gender;
 		this.salary = salary;
+		this.address = address;
 	}
-	public Employee() {
-		super();
+	
+	public Address getAddress() {
+		return address;
+	}
+	
+	public void setAddress(Address address) {
+		this.address = address;
 	}
 	
 	public int getId() {
@@ -63,7 +75,7 @@ public class Employee {
 	
 	@Override
 	public String toString() {
-		return "Employee [id=" + id + ", name=" + name + ", gender=" + gender + ", salary=" + salary + "]";
+		return "Employee [id=" + id + ", name=" + name + ", gender=" + gender + ", salary=" + salary + ", address=" + address + "]";
 	}
 	
 	
