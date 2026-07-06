@@ -9,37 +9,49 @@ import org.hibernate.query.MutationQuery;
 import org.hibernate.query.Query;
 
 import com.hbn.configuration.HibernateConfig;
+import com.hbn.entity.Address;
 import com.hbn.entity.Employee;
 
 public class Main {
+	
+	
+	public static void saveRecord(Session session) {
+		Transaction tx = session.beginTransaction();
+		Address add1 =  new Address();
+		add1.setCity("Netherfield");
+		add1.setState("London");
+		
+	   Employee e1 = new Employee();
+	   e1.setName("Lizzy");
+	   e1.setGender("female");
+	   e1.setSalary(52000);
+       e1.setAddress(add1);
+      
+      add1.setEmployee(e1);
+       
+     session.persist(add1);	  
+ 	 session.persist(e1);
+ 	 
+ 	 
+ 	 tx.commit();
+ 	  
+	
+	}
 
 	public static void main(String[] args) {
 		
-	Employee e = new Employee("vishi", "Female" , 215000);
+		
+		
+	 Session session = HibernateConfig.getSessionFactory().openSession(); 
+	 saveRecord(session);
 	
-	Session session = HibernateConfig.getSessionFactory().openSession(); 
-	Transaction tx = session.beginTransaction();
+
+	 
+Address address = session.find(Address.class, 2);
+	 System.out.println(address);
+	 System.out.println(address.getEmployee());
 	
-      
-	Query query = session.createNamedQuery("findByID",Employee.class);
-	
-	  query.setParameter("id" , 2);
-	  
-	  List list = query.getResultList();
-	  
-	  System.out.println(list);
-	  
-	  System.out.println("___________________________________________________________________________________________");
-	  
-	  Query query2 = session.createNamedQuery("findByGender" , Employee.class);
-	  query2.setParameter("gender" , "female");
-	  List list2 = query2.getResultList();
-	  System.out.println(list2);
-	  
-	
-	
-	tx.commit();
-	session.close();
+	 session.close();
 
 }
 
